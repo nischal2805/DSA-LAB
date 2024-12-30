@@ -1,7 +1,26 @@
 import streamlit as st
 
-def get_program_code(number):
-    solutions = {
+# Ensure these functions are defined somewhere in your code
+def get_program_name(program_number):
+    # Return the name of the program based on the number
+    program_names = {
+        1: "Infix to prefix conversion using stack",
+        2: "Evaluation of prefix expression using stack",
+        3: "Message queue using circular array",
+        4: "Multiplication of two polynomials using linked list",
+        5: "Queue using circular linked list",
+        6: "Hash table using linear probing",
+        7: "Heap using array",
+        8: "Expression tree using stack",
+        9: "Binary tree operations",
+        10: "Binary search tree operations"
+        # Add more program names as needed
+    }
+    return program_names.get(program_number, "Unknown Program")
+
+def get_program_code(program_number):
+    # Return the code of the program based on the number
+    program_codes = {
         1: """#include <stdio.h>
 #include <stdlib.h>
 #include <ctype.h>
@@ -1122,8 +1141,9 @@ int main()
     return 0; 
 } """
 
+        # Add more program codes as needed
     }
-    return solutions.get(number, "Program solution not available")
+    return program_codes.get(program_number, "Code not found")
 
 st.set_page_config(page_title="DSA Lab Solutions", layout="wide")
 st.title("Data Structures Lab Programs")
@@ -1144,8 +1164,7 @@ if program_number:
         st.download_button(
             label="Download Solution",
             data=code,
-            file_name=f"program_{program_number}.c",
-            mime="text/plain"
+            file_name=f"program_{program_number}.c"
         )
     
     with col2:
@@ -1160,4 +1179,3 @@ if program_number:
     
     with st.expander("View Solution", expanded=True):
         st.code(code, language='c')
-
