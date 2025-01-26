@@ -9,7 +9,7 @@ def get_program_name(program_number):
         3: "Message queue using circular array",
         4: "Multiplication of two polynomials using linked list",
         5: "Queue using circular linked list",
-        6: "Hash table using linear probing",
+        6: "Hash table using Double hashing",
         7: "Heap using array",
         8: "Expression tree using stack",
         9: "Binary tree operations",
