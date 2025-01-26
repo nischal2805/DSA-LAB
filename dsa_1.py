@@ -526,117 +526,132 @@ int main() {
 
     return 0;
 }""",
-        6: """  #include <stdio.h>
+        6: """ #include <stdio.h>
 #include <stdlib.h>
-#define SIZE 10
+#define TABLE_SIZE 10
+#define EMPTY -1
 
-struct hashTable {
-    int data[SIZE];
-    int flag[SIZE]; // 0 for empty, 1 for occupied
-};
+// Hash table structure
+int hashTable[TABLE_SIZE];
 
-typedef struct hashTable HASH;
-
-void initTable(HASH *table) {
-    for (int i = 0; i < SIZE; i++) {
-        table->data[i] = -1;
-        table->flag[i] = 0;
-    }
+// Primary hash function
+int h1(int key) {
+    return key % TABLE_SIZE;
 }
 
-int hash(int key) {
-    return key % SIZE;
+// Secondary hash function
+int h2(int key) {
+    return 1 + (key % (TABLE_SIZE - 1));
 }
 
-void insert(HASH *table, int key) {
-    int index = hash(key);
-    int originalIndex = index;
-    while (table->flag[index] == 1) {
-        index = (index + 1) % SIZE;
-        if (index == originalIndex) {
-            printf("\nHash table is full\n");
+// Insert a key into the hash table
+void insert(int key) {
+    int index = h1(key);
+    int step = h2(key);
+    int i = 0;
+
+    // Linear probing with double hashing
+    while (hashTable[(index + i * step) % TABLE_SIZE] != EMPTY) {
+        i++;
+        if (i == TABLE_SIZE) {
+            printf("Hash table is full! Cannot insert %d\n", key);
             return;
         }
     }
-    table->data[index] = key;
-    table->flag[index] = 1;
-    printf("\n%d inserted at index %d\n", key, index);
+
+    hashTable[(index + i * step) % TABLE_SIZE] = key;
+    printf("Inserted %d at index %d\n", key, (index + i * step) % TABLE_SIZE);
 }
 
-void search(HASH *table, int key) {
-    int index = hash(key);
-    int originalIndex = index;
-    while (table->flag[index] != 0) {
-        if (table->data[index] == key) {
-            printf("\n%d found at index %d\n", key, index);
-            return;
+// Search for a key in the hash table
+int search(int key) {
+    int index = h1(key);
+    int step = h2(key);
+    int i = 0;
+
+    // Linear probing with double hashing
+    while (hashTable[(index + i * step) % TABLE_SIZE] != EMPTY) {
+        if (hashTable[(index + i * step) % TABLE_SIZE] == key) {
+            return (index + i * step) % TABLE_SIZE;
         }
-        index = (index + 1) % SIZE;
-        if (index == originalIndex) break;
-    }
-    printf("\n%d not found\n", key);
-}
-
-void deleteKey(HASH *table, int key) {
-    int index = hash(key);
-    int originalIndex = index;
-    while (table->flag[index] != 0) {
-        if (table->data[index] == key) {
-            table->data[index] = -1;
-            table->flag[index] = 0;
-            printf("\n%d deleted from index %d\n", key, index);
-            return;
+        i++;
+        if (i == TABLE_SIZE) {
+            break;
         }
-        index = (index + 1) % SIZE;
-        if (index == originalIndex) break;
     }
-    printf("\n%d not found to delete\n", key);
+    return -1;
 }
 
-void display(HASH *table) {
+// Delete a key from the hash table
+void delete (int key) {
+    int pos = search(key);
+    if (pos == -1) {
+        printf("Key %d not found in the hash table.\n", key);
+    } else {
+        hashTable[pos] = EMPTY;
+        printf("Key %d deleted from index %d\n", key, pos);
+    }
+}
+
+// Display the hash table
+void display() {
     printf("\nHash Table:\n");
-    for (int i = 0; i < SIZE; i++) {
-        if (table->flag[i] == 1)
-            printf("Index %d: %d\n", i, table->data[i]);
+    for (int i = 0; i < TABLE_SIZE; i++) {
+        if (hashTable[i] == EMPTY)
+            printf("Index %d: EMPTY\n", i);
         else
-            printf("Index %d: Empty\n", i);
+            printf("Index %d: %d\n", i, hashTable[i]);
     }
+    printf("\n");
 }
 
 int main() {
-    HASH table;
-    initTable(&table);
-    int choice, key;
-
-    while (1) {
-        printf("\n1. Insert\n2. Search\n3. Delete\n4. Display\n5. Exit\nEnter your choice: ");
-        scanf("%d", &choice);
-        switch (choice) {
-            case 1:
-                printf("Enter key to insert: ");
-                scanf("%d", &key);
-                insert(&table, key);
-                break;
-            case 2:
-                printf("Enter key to search: ");
-                scanf("%d", &key);
-                search(&table, key);
-                break;
-            case 3:
-                printf("Enter key to delete: ");
-                scanf("%d", &key);
-                deleteKey(&table, key);
-                break;
-            case 4:
-                display(&table);
-                break;
-            case 5:
-                exit(0);
-            default:
-                printf("\nInvalid choice\n");
-        }
+    // Initialize hash table
+    for (int i = 0; i < TABLE_SIZE; i++) {
+        hashTable[i] = EMPTY;
     }
 
+    int choice, key;
+    while (1) {
+        printf("\nMenu:\n");
+        printf("1. Insert\n");
+        printf("2. Search\n");
+        printf("3. Delete\n");
+        printf("4. Display\n");
+        printf("5. Exit\n");
+        printf("Enter your choice: ");
+        scanf("%d", &choice);
+
+        switch (choice) {
+        case 1:
+            printf("Enter key to insert: ");
+            scanf("%d", &key);
+            insert(key);
+            break;
+        case 2:
+            printf("Enter key to search: ");
+            scanf("%d", &key);
+            int pos = search(key);
+            if (pos == -1) {
+                printf("Key %d not found.\n", key);
+            } else {
+                printf("Key %d found at index %d.\n", key, pos);
+            }
+            break;
+        case 3:
+            printf("Enter key to delete: ");
+            scanf("%d", &key);
+            delete (key);
+            break;
+        case 4:
+            display();
+            break;
+        case 5:
+            exit(0);
+        default:
+            printf("Invalid choice! Try again.\n");
+        }
+    }
     return 0;
 }""",
         7: """  #include <stdio.h>
