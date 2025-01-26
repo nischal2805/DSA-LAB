@@ -4,7 +4,7 @@ import streamlit as st
 def get_program_name(program_number):
     # Return the name of the program based on the number
     program_names = {
-        1: "Infix to prefix conversion using stack",
+        1: "Infix to postfix conversion using stack",
         2: "Evaluation of prefix expression using stack",
         3: "Message queue using circular array",
         4: "Multiplication of two polynomials using linked list",
