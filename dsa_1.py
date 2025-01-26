@@ -1167,15 +1167,15 @@ if program_number:
             file_name=f"program_{program_number}.c"
         )
     
-    with col2:
-        # Using HTML/JavaScript for clipboard functionality
-        st.markdown(f"""
-            <button onclick="navigator.clipboard.writeText(`{code}`);alert('Code copied!')">
-                Copy Code
-            </button>
-            """, 
-            unsafe_allow_html=True
-        )
+    # with col2:
+    #     # Using HTML/JavaScript for clipboard functionality
+    #     st.markdown(f"""
+    #         <button onclick="navigator.clipboard.writeText(`{code}`);alert('Code copied!')">
+    #             Copy Code
+    #         </button>
+    #         """, 
+    #         unsafe_allow_html=True
+    #     )
     
     with st.expander("View Solution", expanded=True):
         st.code(code, language='c')
